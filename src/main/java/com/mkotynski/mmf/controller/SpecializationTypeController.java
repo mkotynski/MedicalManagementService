@@ -1,0 +1,46 @@
+package com.mkotynski.mmf.controller;
+
+
+import com.mkotynski.mmf.entity.Doctor;
+import com.mkotynski.mmf.entity.SpecializationType;
+import com.mkotynski.mmf.repository.DoctorRepository;
+import com.mkotynski.mmf.repository.SpecializationTypeRepository;
+import com.mkotynski.mmf.utils.HeaderUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
+@Slf4j
+public class SpecializationTypeController {
+
+    private final SpecializationTypeRepository specializationTypeRepository;
+
+    @Value("${pl.mkotynski.wms.app-name}")
+    private String applicationName;
+    private static final String ENTITY_NAME = "specialization_type";
+
+    @GetMapping("/specialization-type")
+    public List<SpecializationType> getAllSpecializationTypes() {
+        return specializationTypeRepository.findAll();
+    }
+
+    @PostMapping("/specialization-type")
+    public ResponseEntity<SpecializationType> createSpecializationType(@RequestBody SpecializationType specializationType) throws URISyntaxException {
+        log.debug("REST request to save dcotor : {}", specializationType);
+
+        SpecializationType result = specializationTypeRepository.save(specializationType);
+        return ResponseEntity.created(new URI("/api/specialization-type/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+}
