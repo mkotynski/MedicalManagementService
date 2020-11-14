@@ -1,9 +1,7 @@
 package com.mkotynski.mmf.controller;
 
 
-import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.entity.VisitType;
-import com.mkotynski.mmf.repository.DoctorRepository;
 import com.mkotynski.mmf.repository.VisitTypeRepository;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +35,7 @@ public class VisitTypeController {
     public ResponseEntity<VisitType> createDoctor(@RequestBody VisitType visitType) throws URISyntaxException {
         log.debug("REST request to save visitType : {}", visitType);
 
-        Doctor result = visitTypeRepository.save(visitType);
+        VisitType result = visitTypeRepository.save(visitType);
         return ResponseEntity.created(new URI("/api/definitions/accepted-pallets/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
