@@ -1,9 +1,16 @@
 package com.mkotynski.mmf.controller;
 
 
+import com.mkotynski.mmf.dto.DoctorRequest;
+import com.mkotynski.mmf.dto.DoctorResponse;
+import com.mkotynski.mmf.dto.MedicalVisitRequest;
+import com.mkotynski.mmf.dto.MedicalVisitResponse;
 import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.entity.MedicalVisit;
+import com.mkotynski.mmf.repository.DoctorRepository;
 import com.mkotynski.mmf.repository.MedicalVisitRepository;
+import com.mkotynski.mmf.service.DoctorService;
+import com.mkotynski.mmf.service.MedicalVisitService;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,25 +28,49 @@ import java.util.List;
 @Slf4j
 public class MedicalVisitController {
 
+
+    private final MedicalVisitService medicalVisitService;
     private final MedicalVisitRepository medicalVisitRepository;
 
     @Value("${pl.mkotynski.wms.app-name}")
     private String applicationName;
-    private static final String ENTITY_NAME = "medical_visit";
+    private static final String ENTITY_NAME = "medical-visit";
 
     @GetMapping("/medical-visit")
-    public List<MedicalVisit> getAllMedicalVisit() {
-        return medicalVisitRepository.findAll();
+    public List<MedicalVisitResponse> getAllDoctors() {
+        log.debug("REST request to read all medical-visits");
+
+        return medicalVisitService.getAllMedicalVisit();
     }
 
     @PostMapping("/medical-visit")
-    public ResponseEntity<MedicalVisit> createMedicalVisit(@RequestBody MedicalVisit medicalVisit) throws URISyntaxException {
-        log.debug("REST request to save medical-visit : {}", medicalVisit);
+    public ResponseEntity<MedicalVisitResponse> createDoctor(@RequestBody MedicalVisitRequest medicalVisitRequest) throws URISyntaxException {
+        log.debug("REST request to create medical-visit : {}", medicalVisitRequest);
 
-        MedicalVisit result = medicalVisitRepository.save(medicalVisit);
+        MedicalVisit medicalVisit = medicalVisitService.saveMedicalVisit(medicalVisitRequest);
+        MedicalVisitResponse result = medicalVisitService.getMedicalVisit(medicalVisit).get();
         return ResponseEntity.created(new URI("/api/medical-visit/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
+
+    @PutMapping("/medical-visit")
+    public ResponseEntity<MedicalVisitResponse> updateDoctor(@RequestBody MedicalVisitRequest medicalVisitRequest) throws URISyntaxException {
+        log.debug("REST request to update medical-visit : {}", medicalVisitRequest);
+
+        MedicalVisit medicalVisit = medicalVisitService.saveMedicalVisit(medicalVisitRequest);
+        MedicalVisitResponse result = medicalVisitService.getMedicalVisit(medicalVisit).get();
+        return ResponseEntity.created(new URI("/api/medical-visit/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+    @DeleteMapping("/medical-visit/{id}")
+    public ResponseEntity<Void> deleteMedicalVisit(@PathVariable Integer id) {
+        log.debug("REST request to delete medical-visit : {}", id);
+        medicalVisitRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
 
 }

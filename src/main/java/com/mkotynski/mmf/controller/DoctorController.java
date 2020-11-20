@@ -1,8 +1,11 @@
 package com.mkotynski.mmf.controller;
 
 
+import com.mkotynski.mmf.dto.DoctorRequest;
+import com.mkotynski.mmf.dto.DoctorResponse;
 import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.repository.DoctorRepository;
+import com.mkotynski.mmf.service.DoctorService;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,7 @@ import java.util.List;
 @Slf4j
 public class DoctorController {
 
+    private final DoctorService doctorService;
     private final DoctorRepository doctorRepository;
 
     @Value("${pl.mkotynski.wms.app-name}")
@@ -27,18 +31,40 @@ public class DoctorController {
     private static final String ENTITY_NAME = "doctor";
 
     @GetMapping("/doctor")
-    public List<Doctor> getAllDoctors() {
-        return doctorRepository.findAll();
+    public List<DoctorResponse> getAllDoctors() {
+        log.debug("REST request to read all doctor");
+
+        return doctorService.getAllDoctors();
     }
 
     @PostMapping("/doctor")
-    public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) throws URISyntaxException {
-        log.debug("REST request to save doctor : {}", doctor);
+    public ResponseEntity<DoctorResponse> createDoctor(@RequestBody DoctorRequest doctorRequest) throws URISyntaxException {
+        log.debug("REST request to create doctor : {}", doctorRequest);
 
-        Doctor result = doctorRepository.save(doctor);
+        Doctor doctor = doctorService.saveDoctor(doctorRequest);
+        DoctorResponse result = doctorService.getDoctor(doctor).get();
         return ResponseEntity.created(new URI("/api/doctor/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
+
+    @PutMapping("/doctor")
+    public ResponseEntity<DoctorResponse> updateDoctor(@RequestBody DoctorRequest doctorRequest) throws URISyntaxException {
+        log.debug("REST request to update doctor : {}", doctorRequest);
+
+        Doctor doctor = doctorService.saveDoctor(doctorRequest);
+        DoctorResponse result = doctorService.getDoctor(doctor).get();
+        return ResponseEntity.created(new URI("/api/doctor/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+    @DeleteMapping("/doctor/{id}")
+    public ResponseEntity<Void> deleteDoctor(@PathVariable Integer id) {
+        log.debug("REST request to delete doctor : {}", id);
+        doctorRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
 
 }
