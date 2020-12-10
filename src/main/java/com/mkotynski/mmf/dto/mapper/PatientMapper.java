@@ -1,20 +1,20 @@
 package com.mkotynski.mmf.dto.mapper;
 
-import com.mkotynski.mmf.dto.DoctorRequest;
 import com.mkotynski.mmf.dto.DoctorResponse;
+import com.mkotynski.mmf.dto.PatientResponse;
 import com.mkotynski.mmf.entity.Doctor;
+import com.mkotynski.mmf.entity.Patient;
 
-public class DoctorMapper {
-    public static DoctorResponse getResponseDtoFromEntity(Doctor entity) {
+public class PatientMapper {
+    public static PatientResponse getResponseDtoFromEntity(Patient entity) {
         if (entity == null) {
             return null;
         }
-        return DoctorResponse.builder()
+        return PatientResponse.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .surname(entity.getSurname())
-                .dateOfEmployment(entity.getDateOfEmployment())
-                .specializationType(entity.getSpecializationType().getResponseDto())
+                .dateOfRegister(entity.getDateOfRegister())
                 .build();
     }
 

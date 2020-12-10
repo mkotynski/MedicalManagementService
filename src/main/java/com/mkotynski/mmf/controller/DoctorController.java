@@ -6,6 +6,7 @@ import com.mkotynski.mmf.dto.DoctorResponse;
 import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.repository.DoctorRepository;
 import com.mkotynski.mmf.service.DoctorService;
+import com.mkotynski.mmf.service.PatientService;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,17 +47,15 @@ public class DoctorController {
         return ResponseEntity.created(new URI("/api/doctor/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
+
     }
 
     @PutMapping("/doctor")
-    public ResponseEntity<DoctorResponse> updateDoctor(@RequestBody DoctorRequest doctorRequest) throws URISyntaxException {
+    public DoctorResponse updateDoctor(@RequestBody DoctorRequest doctorRequest) throws URISyntaxException {
         log.debug("REST request to update doctor : {}", doctorRequest);
 
         Doctor doctor = doctorService.saveDoctor(doctorRequest);
-        DoctorResponse result = doctorService.getDoctor(doctor).get();
-        return ResponseEntity.created(new URI("/api/doctor/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-                .body(result);
+        return doctorService.getDoctor(doctor).get();
     }
 
     @DeleteMapping("/doctor/{id}")

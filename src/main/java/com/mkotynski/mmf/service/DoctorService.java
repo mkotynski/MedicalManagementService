@@ -3,7 +3,6 @@ package com.mkotynski.mmf.service;
 
 import com.mkotynski.mmf.dto.DoctorRequest;
 import com.mkotynski.mmf.dto.DoctorResponse;
-import com.mkotynski.mmf.dto.mapper.DoctorMapper;
 import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.repository.DoctorRepository;
 import com.mkotynski.mmf.repository.SpecializationTypeRepository;
@@ -23,13 +22,13 @@ public class DoctorService {
     SpecializationTypeRepository specializationTypeRepository;
 
     public Optional<DoctorResponse> getDoctor(Doctor doctor) {
-        return Optional.ofNullable(DoctorMapper.getResponseDtoFromEntity(doctor));
+        return Optional.ofNullable(doctor.getResponseDto());
     }
 
     public List<DoctorResponse> getAllDoctors() {
         return doctorRepository.findAll()
                 .stream()
-                .map(DoctorMapper::getResponseDtoFromEntity)
+                .map(Doctor::getResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -37,14 +36,15 @@ public class DoctorService {
         Doctor def = new Doctor();
         if (doctorRequest.getId() != null) {
             Optional<Doctor> object = doctorRepository.findById(doctorRequest.getId());
+
             if (object.isPresent()) {
                 def = object.get();
             }
         }
-        def.setName(doctorRequest.getName());
         def.setSurname(doctorRequest.getSurname());
+        def.setName(doctorRequest.getName());
         def.setDateOfEmployment(doctorRequest.getDateOfEmployment());
-        def.setSpecializationType(specializationTypeRepository.getOne(doctorRequest.getSpecializationType()));
+        def.setSpecializationType(specializationTypeRepository.findById(doctorRequest.getSpecializationType()).get());
 
         return doctorRepository.save(def);
     }

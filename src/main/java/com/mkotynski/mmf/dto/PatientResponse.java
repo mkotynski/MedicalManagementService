@@ -13,10 +13,9 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DoctorResponse {
+public class PatientResponse {
     private Integer id;
     private String name;
     private String surname;
-    private Date dateOfEmployment;
-    private SpecializationTypeResponse specializationType;
+    private Date dateOfRegister;
 }

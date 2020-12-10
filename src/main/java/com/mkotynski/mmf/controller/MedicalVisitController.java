@@ -1,20 +1,17 @@
 package com.mkotynski.mmf.controller;
 
 
-import com.mkotynski.mmf.dto.DoctorRequest;
-import com.mkotynski.mmf.dto.DoctorResponse;
 import com.mkotynski.mmf.dto.MedicalVisitRequest;
 import com.mkotynski.mmf.dto.MedicalVisitResponse;
-import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.entity.MedicalVisit;
-import com.mkotynski.mmf.repository.DoctorRepository;
 import com.mkotynski.mmf.repository.MedicalVisitRepository;
-import com.mkotynski.mmf.service.DoctorService;
 import com.mkotynski.mmf.service.MedicalVisitService;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,5 +69,21 @@ public class MedicalVisitController {
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
+//    @GetMapping("/medical-visit/by-patient/{id}")
+//    public List<MedicalVisitResponse> getAllMedicalVisitByPatientId(@PathVariable Integer id) {
+//        log.debug("REST request to read all medical-visits by patient id");
+//
+//        return medicalVisitService.getAllMedicalVisitByPatientId(id);
+//    }
+
+    @GetMapping("/medical-visit/by-patient/{id}")
+    public ResponseEntity<Object> getAllMedicalVisitByPatientId(@PathVariable Integer id) {
+        log.debug("REST request to read all medical-visits by patient id");
+        JSONObject entity = new JSONObject();
+
+        entity.put("results", medicalVisitService.getAllMedicalVisitByPatientId(id));
+
+        return new ResponseEntity<Object>(entity, HttpStatus.OK);
+    }
 
 }

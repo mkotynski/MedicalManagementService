@@ -1,5 +1,7 @@
 package com.mkotynski.mmf.entity;
 
+import com.mkotynski.mmf.dto.DoctorRequest;
+import com.mkotynski.mmf.dto.DoctorResponse;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,5 +31,15 @@ public class Doctor {
 
     @ManyToOne
     private SpecializationType specializationType;
+
+    public DoctorResponse getResponseDto(){
+        return DoctorResponse.builder()
+                .id(this.id)
+                .name(this.name)
+                .surname(this.surname)
+                .dateOfEmployment(this.dateOfEmployment)
+                .specializationType(this.specializationType.getResponseDto())
+                .build();
+    }
 
 }

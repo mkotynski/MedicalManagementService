@@ -1,10 +1,17 @@
 package com.mkotynski.mmf.service;
 
 
+import com.mkotynski.mmf.dto.SpecializationTypeRequest;
+import com.mkotynski.mmf.dto.SpecializationTypeResponse;
+import com.mkotynski.mmf.dto.VisitTypeRequest;
+import com.mkotynski.mmf.dto.VisitTypeResponse;
 import com.mkotynski.mmf.entity.SpecializationType;
+import com.mkotynski.mmf.entity.VisitType;
 import com.mkotynski.mmf.repository.SpecializationTypeRepository;
+import com.mkotynski.mmf.repository.VisitTypeRepository;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,30 +22,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class SpecializationTypeService {
 
-    private final SpecializationTypeRepository specializationTypeRepository;
 
-    @Value("${pl.mkotynski.wms.app-name}")
-    private String applicationName;
-    private static final String ENTITY_NAME = "specialization_type";
+    SpecializationTypeRepository specializationTypeRepository;
 
-    @GetMapping("/specialization-type")
-    public List<SpecializationType> getAllSpecializationTypes() {
-        return specializationTypeRepository.findAll();
+    public Optional<SpecializationTypeResponse> getSpecializationType(SpecializationType specializationType) {
+        return Optional.ofNullable(specializationType.getResponseDto());
     }
 
-    @PostMapping("/specialization-type")
-    public ResponseEntity<SpecializationType> createSpecializationType(@RequestBody SpecializationType specializationType) throws URISyntaxException {
-        log.debug("REST request to save dcotor : {}", specializationType);
+    public List<SpecializationTypeResponse> getAllVisitTypes() {
+        return specializationTypeRepository.findAll()
+                .stream()
+                .map(SpecializationType::getResponseDto)
+                .collect(Collectors.toList());
+    }
 
-        SpecializationType result = specializationTypeRepository.save(specializationType);
-        return ResponseEntity.created(new URI("/api/specialization-type/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-                .body(result);
+    public SpecializationType saveSpecializationType(@RequestBody SpecializationTypeRequest specializationTypeRequest) {
+        SpecializationType def = new SpecializationType();
+        if (specializationTypeRequest.getId() != null) {
+            Optional<SpecializationType> object = specializationTypeRepository.findById(specializationTypeRequest.getId());
+
+            if (object.isPresent()) {
+                def = object.get();
+            }
+        }
+        def.setName(specializationTypeRequest.getName());
+
+        return specializationTypeRepository.save(def);
     }
 
 }

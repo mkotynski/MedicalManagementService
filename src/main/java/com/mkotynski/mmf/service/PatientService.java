@@ -1,44 +1,49 @@
 package com.mkotynski.mmf.service;
 
 
+import com.mkotynski.mmf.dto.PatientRequest;
+import com.mkotynski.mmf.dto.PatientResponse;
+import com.mkotynski.mmf.dto.mapper.PatientMapper;
 import com.mkotynski.mmf.entity.Patient;
 import com.mkotynski.mmf.repository.PatientRepository;
-import com.mkotynski.mmf.utils.HeaderUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api")
-@RequiredArgsConstructor
-@Slf4j
+@Service
+@AllArgsConstructor
 public class PatientService {
+    PatientRepository patientRepository;
 
-    private final PatientRepository patientRepository;
-
-    @Value("${pl.mkotynski.wms.app-name}")
-    private String applicationName;
-    private static final String ENTITY_NAME = "patient";
-
-    @GetMapping("/patient")
-    public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
+    public Optional<PatientResponse> getPatient(Patient patient) {
+        return Optional.ofNullable(PatientMapper.getResponseDtoFromEntity(patient));
     }
 
-    @PostMapping("/patient")
-    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) throws URISyntaxException {
-        log.debug("REST request to save patient : {}", patient);
-
-        Patient result = patientRepository.save(patient);
-        return ResponseEntity.created(new URI("/api/patient/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-                .body(result);
+    public List<PatientResponse> getAllPatients() {
+        return patientRepository.findAll()
+                .stream()
+                .map(Patient::getResponseDto)
+                .collect(Collectors.toList());
     }
+
+    public Patient savePatient(@RequestBody PatientRequest patientRequest) {
+        Patient def = new Patient();
+        if (patientRequest.getId() != null) {
+            Optional<Patient> object = patientRepository.findById(patientRequest.getId());
+            if (object.isPresent()) {
+                def = object.get();
+            }
+        }
+        def.setName(patientRequest.getName());
+        def.setSurname(patientRequest.getSurname());
+        def.setDateOfRegister(patientRequest.getDateOfRegister());
+
+        return patientRepository.save(def);
+    }
+
 
 }

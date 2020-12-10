@@ -1,8 +1,14 @@
 package com.mkotynski.mmf.controller;
 
 
+import com.mkotynski.mmf.dto.PatientRequest;
+import com.mkotynski.mmf.dto.PatientResponse;
+import com.mkotynski.mmf.dto.VisitTypeRequest;
+import com.mkotynski.mmf.dto.VisitTypeResponse;
+import com.mkotynski.mmf.entity.Patient;
 import com.mkotynski.mmf.entity.VisitType;
 import com.mkotynski.mmf.repository.VisitTypeRepository;
+import com.mkotynski.mmf.service.VisitTypeService;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,27 +27,44 @@ import java.util.List;
 public class VisitTypeController {
 
     private final VisitTypeRepository visitTypeRepository;
+    private final VisitTypeService visitTypeService;
 
     @Value("${pl.mkotynski.wms.app-name}")
     private String applicationName;
     private static final String ENTITY_NAME = "visit-type";
 
     @GetMapping("/visit-type")
-    public List<VisitType> getAllVisitTypes() {
-        return visitTypeRepository.findAll();
+    public List<VisitTypeResponse> getAllVisitTypes() {
+        return visitTypeService.getAllVisitTypes();
     }
 
     @PostMapping("/visit-type")
-    public ResponseEntity<VisitType> createDoctor(@RequestBody VisitType visitType) throws URISyntaxException {
-        log.debug("REST request to save visitType : {}", visitType);
+    public ResponseEntity<VisitTypeResponse> createVisitType(@RequestBody VisitTypeRequest visitTypeRequest) throws URISyntaxException {
+        log.debug("REST request to save visitType : {}", visitTypeRequest);
 
-        VisitType result = visitTypeRepository.save(visitType);
-        return ResponseEntity.created(new URI("/api/definitions/accepted-pallets/" + result.getId()))
+        VisitType visitType = visitTypeService.saveVisitType(visitTypeRequest);
+        VisitTypeResponse result = visitTypeService.getVisitType(visitType).get();
+        return ResponseEntity.created(new URI("/api/patient/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
     }
 
+    @PutMapping("/visit-type")
+    public ResponseEntity<VisitTypeResponse> updateVisitType(@RequestBody VisitTypeRequest visitTypeRequest) throws URISyntaxException {
+        log.debug("REST request to update visit-type : {}", visitTypeRequest);
 
+        VisitType visitType = visitTypeService.saveVisitType(visitTypeRequest);
+        VisitTypeResponse result = visitTypeService.getVisitType(visitType).get();
+        return ResponseEntity.created(new URI("/api/patient/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
 
+    @DeleteMapping("/visit-type/{id}")
+    public ResponseEntity<Void> deleteVisitType(@PathVariable Integer id) {
+        log.debug("REST request to delete visit-type : {}", id);
+        visitTypeRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
 
 }

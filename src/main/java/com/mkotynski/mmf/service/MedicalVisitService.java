@@ -2,12 +2,9 @@ package com.mkotynski.mmf.service;
 
 
 import com.mkotynski.mmf.dto.DoctorRequest;
-import com.mkotynski.mmf.dto.DoctorResponse;
 import com.mkotynski.mmf.dto.MedicalVisitRequest;
 import com.mkotynski.mmf.dto.MedicalVisitResponse;
-import com.mkotynski.mmf.dto.mapper.DoctorMapper;
 import com.mkotynski.mmf.dto.mapper.MedicalVisitMapper;
-import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.entity.MedicalVisit;
 import com.mkotynski.mmf.repository.*;
 import lombok.AllArgsConstructor;
@@ -34,7 +31,7 @@ public class MedicalVisitService {
     public List<MedicalVisitResponse> getAllMedicalVisit() {
         return medicalVisitRepository.findAll()
                 .stream()
-                .map(MedicalVisitMapper::getResponseDtoFromEntity)
+                .map(MedicalVisit::getResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -48,13 +45,19 @@ public class MedicalVisitService {
         }
         def.setName(medicalVisitRequest.getName());
         def.setDate(medicalVisitRequest.getDate());
-        def.setTime(medicalVisitRequest.getTime());
-        def.setVisitType(visitTypeRepository.getOne(medicalVisitRequest.getVisitType()));
+        def.setVisitType(visitTypeRepository.findById(medicalVisitRequest.getVisitType()).get());
         def.setDescription(medicalVisitRequest.getDescription());
-        def.setDoctor(doctorRepository.getOne(medicalVisitRequest.getDoctor()));
-        def.setPatient(patientRepository.getOne(medicalVisitRequest.getPatient()));
+        def.setDoctor(doctorRepository.findById(medicalVisitRequest.getDoctor()).get());
+        def.setPatient(patientRepository.findById(medicalVisitRequest.getPatient()).get());
 
         return medicalVisitRepository.save(def);
+    }
+
+    public List<MedicalVisitResponse> getAllMedicalVisitByPatientId(Integer id){
+        return medicalVisitRepository.findAllByPatient_Id(id)
+                .stream()
+                .map(MedicalVisit::getResponseDto)
+                .collect(Collectors.toList());
     }
 
 }

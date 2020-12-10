@@ -14,11 +14,10 @@ public class MedicalVisitMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .date(entity.getDate())
-                .time(entity.getTime())
-                .visitType(entity.getVisitType())
                 .description(entity.getDescription())
-                .doctor(entity.getDoctor())
-                .patient(entity.getPatient())
+                .visitType(entity.getVisitType().getResponseDto())
+                .doctor(entity.getDoctor().getResponseDto())
+                .patient(entity.getPatient().getResponseDto())
                 .build();
     }
 

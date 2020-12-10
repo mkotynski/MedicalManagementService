@@ -1,47 +1,53 @@
 package com.mkotynski.mmf.service;
 
 
+import com.mkotynski.mmf.dto.DoctorRequest;
+import com.mkotynski.mmf.dto.DoctorResponse;
+import com.mkotynski.mmf.dto.VisitTypeRequest;
+import com.mkotynski.mmf.dto.VisitTypeResponse;
+import com.mkotynski.mmf.dto.mapper.VisitTypeMapper;
+import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.entity.VisitType;
+import com.mkotynski.mmf.repository.DoctorRepository;
+import com.mkotynski.mmf.repository.SpecializationTypeRepository;
 import com.mkotynski.mmf.repository.VisitTypeRepository;
-import com.mkotynski.mmf.utils.HeaderUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api")
-@RequiredArgsConstructor
-@Slf4j
+@Service
+@AllArgsConstructor
 public class VisitTypeService {
 
-    private final VisitTypeRepository visitTypeRepository;
+    VisitTypeRepository visitTypeRepository;
 
-    @Value("${pl.mkotynski.wms.app-name}")
-    private String applicationName;
-    private static final String ENTITY_NAME = "visit-type";
-
-    @GetMapping("/visit-type")
-    public List<VisitType> getAllVisitTypes() {
-        return visitTypeRepository.findAll();
+    public Optional<VisitTypeResponse> getVisitType(VisitType visitType) {
+        return Optional.ofNullable(visitType.getResponseDto());
     }
 
-    @PostMapping("/visit-type")
-    public ResponseEntity<VisitType> createDoctor(@RequestBody VisitType visitType) throws URISyntaxException {
-        log.debug("REST request to save visitType : {}", visitType);
-
-        VisitType result = visitTypeRepository.save(visitType);
-        return ResponseEntity.created(new URI("/api/definitions/accepted-pallets/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-                .body(result);
+    public List<VisitTypeResponse> getAllVisitTypes() {
+        return visitTypeRepository.findAll()
+                .stream()
+                .map(VisitType::getResponseDto)
+                .collect(Collectors.toList());
     }
 
+    public VisitType saveVisitType(@RequestBody VisitTypeRequest visitTypeRequest) {
+        VisitType def = new VisitType();
+        if (visitTypeRequest.getId() != null) {
+            Optional<VisitType> object = visitTypeRepository.findById(visitTypeRequest.getId());
 
+            if (object.isPresent()) {
+                def = object.get();
+            }
+        }
+        def.setName(visitTypeRequest.getName());
+        def.setDescription(visitTypeRequest.getDescription());
 
-
+        return visitTypeRepository.save(def);
+    }
 }

@@ -1,5 +1,10 @@
 package com.mkotynski.mmf.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mkotynski.mmf.dto.DoctorResponse;
+import com.mkotynski.mmf.dto.MedicalVisitResponse;
+import com.mkotynski.mmf.enums.VisitStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,9 +38,26 @@ public class MedicalVisit {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "visit_status")
+    private VisitStatus visitStatus;
+
     @ManyToOne
+    @JsonIgnoreProperties("specializationType")
     private Doctor doctor;
 
     @ManyToOne
     private Patient patient;
+
+    public MedicalVisitResponse getResponseDto(){
+        return MedicalVisitResponse.builder()
+                .id(this.id)
+                .name(this.name)
+                .date(this.date)
+                .time(this.time)
+                .visitType(this.visitType.getResponseDto())
+                .description(this.description)
+                .doctor(this.doctor.getResponseDto())
+                .patient(this.patient.getResponseDto())
+                .build();
+    }
 }

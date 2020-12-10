@@ -22,8 +22,8 @@ public class MedicalVisitResponse {
     private String name;
     private Date date;
     private Time time;
-    private VisitType visitType;
+    private VisitTypeResponse visitType;
     private String description;
-    private Doctor doctor;
-    private Patient patient;
+    private DoctorResponse doctor;
+    private PatientResponse patient;
 }

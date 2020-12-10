@@ -1,10 +1,14 @@
 package com.mkotynski.mmf.controller;
 
 
+import com.mkotynski.mmf.dto.*;
 import com.mkotynski.mmf.entity.Doctor;
+import com.mkotynski.mmf.entity.MedicalVisit;
 import com.mkotynski.mmf.entity.SpecializationType;
+import com.mkotynski.mmf.entity.VisitType;
 import com.mkotynski.mmf.repository.DoctorRepository;
 import com.mkotynski.mmf.repository.SpecializationTypeRepository;
+import com.mkotynski.mmf.service.SpecializationTypeService;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +27,7 @@ import java.util.List;
 public class SpecializationTypeController {
 
     private final SpecializationTypeRepository specializationTypeRepository;
+    private final SpecializationTypeService specializationTypeService;
 
     @Value("${pl.mkotynski.wms.app-name}")
     private String applicationName;
@@ -34,13 +39,32 @@ public class SpecializationTypeController {
     }
 
     @PostMapping("/specialization-type")
-    public ResponseEntity<SpecializationType> createSpecializationType(@RequestBody SpecializationType specializationType) throws URISyntaxException {
-        log.debug("REST request to save dcotor : {}", specializationType);
+    public ResponseEntity<SpecializationTypeResponse> createSpecializationType(@RequestBody SpecializationTypeRequest specializationTypeRequest) throws URISyntaxException {
+        log.debug("REST request to save specialization type : {}", specializationTypeRequest);
 
-        SpecializationType result = specializationTypeRepository.save(specializationType);
+        SpecializationType specializationType = specializationTypeService.saveSpecializationType(specializationTypeRequest);
+        SpecializationTypeResponse result = specializationTypeService.getSpecializationType(specializationType).get();
         return ResponseEntity.created(new URI("/api/specialization-type/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
                 .body(result);
+    }
+
+    @PutMapping("/specialization-type")
+    public ResponseEntity<SpecializationTypeResponse> updateVisitType(@RequestBody SpecializationTypeRequest specializationTypeRequest) throws URISyntaxException {
+        log.debug("REST request to update specialization-type : {}", specializationTypeRequest);
+
+        SpecializationType specializationType = specializationTypeService.saveSpecializationType(specializationTypeRequest);
+        SpecializationTypeResponse result = specializationTypeService.getSpecializationType(specializationType).get();
+        return ResponseEntity.created(new URI("/api/specialization-type/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
+    }
+
+    @DeleteMapping("/specialization-type/{id}")
+    public ResponseEntity<Void> deleteVisitType(@PathVariable Integer id) {
+        log.debug("REST request to delete specialization-type : {}", id);
+        specializationTypeRepository.deleteById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
 }
