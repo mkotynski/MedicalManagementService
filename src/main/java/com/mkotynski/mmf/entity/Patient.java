@@ -1,5 +1,6 @@
 package com.mkotynski.mmf.entity;
 
+import com.mkotynski.mmf.dto.PatientResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class Patient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name")
     private String name;
@@ -28,5 +29,17 @@ public class Patient {
 
     @Column(name = "dateOfRegister")
     private Date dateOfRegister;
+
+    @Column(name = "subject")
+    private String subject;
+
+    public PatientResponse getResponseDto() {
+        return PatientResponse.builder()
+                .id(this.id)
+                .name(this.name)
+                .surname(this.surname)
+                .dateOfRegister(this.dateOfRegister)
+                .build();
+    }
 }
 

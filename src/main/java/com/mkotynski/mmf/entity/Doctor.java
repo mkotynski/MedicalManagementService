@@ -1,9 +1,8 @@
 package com.mkotynski.mmf.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.mkotynski.mmf.dto.DoctorRequest;
+import com.mkotynski.mmf.dto.DoctorResponse;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,11 +13,12 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name")
     private String name;
@@ -31,5 +31,18 @@ public class Doctor {
 
     @ManyToOne
     private SpecializationType specializationType;
+
+    @Column(name = "subject")
+    private String subject;
+
+    public DoctorResponse getResponseDto(){
+        return DoctorResponse.builder()
+                .id(this.id)
+                .name(this.name)
+                .surname(this.surname)
+                .dateOfEmployment(this.dateOfEmployment)
+                .specializationType(this.specializationType.getResponseDto())
+                .build();
+    }
 
 }
