@@ -1,15 +1,9 @@
 package com.mkotynski.mmf.service;
 
 
-import com.mkotynski.mmf.dto.DoctorRequest;
-import com.mkotynski.mmf.dto.DoctorResponse;
 import com.mkotynski.mmf.dto.VisitTypeRequest;
 import com.mkotynski.mmf.dto.VisitTypeResponse;
-import com.mkotynski.mmf.dto.mapper.VisitTypeMapper;
-import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.entity.VisitType;
-import com.mkotynski.mmf.repository.DoctorRepository;
-import com.mkotynski.mmf.repository.SpecializationTypeRepository;
 import com.mkotynski.mmf.repository.VisitTypeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +21,10 @@ public class VisitTypeService {
 
     public Optional<VisitTypeResponse> getVisitType(VisitType visitType) {
         return Optional.ofNullable(visitType.getResponseDto());
+    }
+
+    public Optional<VisitTypeResponse> getVisitType(Integer id) {
+        return Optional.ofNullable(visitTypeRepository.findById(id).orElse(null).getResponseDto());
     }
 
     public List<VisitTypeResponse> getAllVisitTypes() {

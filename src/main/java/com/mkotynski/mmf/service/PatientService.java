@@ -3,7 +3,6 @@ package com.mkotynski.mmf.service;
 
 import com.mkotynski.mmf.dto.PatientRequest;
 import com.mkotynski.mmf.dto.PatientResponse;
-import com.mkotynski.mmf.dto.mapper.PatientMapper;
 import com.mkotynski.mmf.entity.Patient;
 import com.mkotynski.mmf.repository.PatientRepository;
 import lombok.AllArgsConstructor;
@@ -20,8 +19,13 @@ public class PatientService {
     PatientRepository patientRepository;
 
     public Optional<PatientResponse> getPatient(Patient patient) {
-        return Optional.ofNullable(PatientMapper.getResponseDtoFromEntity(patient));
+        return Optional.ofNullable(patient.getResponseDto());
     }
+
+    public Optional<PatientResponse> getPatient(Integer id) {
+        return Optional.ofNullable(patientRepository.findById(id).orElse(null).getResponseDto());
+    }
+
 
     public List<PatientResponse> getAllPatients() {
         return patientRepository.findAll()

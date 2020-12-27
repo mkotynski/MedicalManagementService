@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SpecializationTypeRequest {
+public class ReceiptPositionRequest {
     private Integer id;
-    private String name;
     private String description;
+    private ReceiptResponse receipt;
+    private Double value;
+
 }

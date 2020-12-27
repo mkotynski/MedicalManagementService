@@ -25,6 +25,10 @@ public class DoctorService {
         return Optional.ofNullable(doctor.getResponseDto());
     }
 
+    public Optional<DoctorResponse> getDoctor(Integer id) {
+        return Optional.ofNullable(doctorRepository.findById(id).orElse(null).getResponseDto());
+    }
+
     public List<DoctorResponse> getAllDoctors() {
         return doctorRepository.findAll()
                 .stream()
@@ -44,7 +48,7 @@ public class DoctorService {
         def.setSurname(doctorRequest.getSurname());
         def.setName(doctorRequest.getName());
         def.setDateOfEmployment(doctorRequest.getDateOfEmployment());
-        def.setSpecializationType(specializationTypeRepository.findById(doctorRequest.getSpecializationType()).get());
+        def.setSpecializationType(specializationTypeRepository.findById(doctorRequest.getSpecializationType().getId()).get());
 
         return doctorRepository.save(def);
     }

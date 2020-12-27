@@ -1,6 +1,5 @@
 package com.mkotynski.mmf.dto;
 
-import com.mkotynski.mmf.enums.RepeatablePeriod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +11,12 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AvailableDateResponse {
+public class ReferenceResponse {
     private Integer id;
-    private Date date;
-    private Date endDate;
-    private Integer duration;
-    private Boolean repeatable;
-    private Boolean reserved;
-    private RepeatablePeriod repeatablePeriod;
+    private String code;
     private DoctorResponse doctor;
-}
+    private PatientResponse patient;
+    private Date date;
+    private Date expirationDate;
+    private String referenceTo;
+    private String details;}

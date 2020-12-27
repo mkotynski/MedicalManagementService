@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -18,16 +18,5 @@ public class DoctorRequest {
     private String name;
     private String surname;
     private Date dateOfEmployment;
-    private Integer specializationType;
-
-    public Doctor getEntity(SpecializationType specializationType){
-        Doctor doctor = new Doctor();
-
-        doctor.setName(this.name);
-        doctor.setSurname(this.surname);
-        doctor.setDateOfEmployment(this.dateOfEmployment);
-        doctor.setSpecializationType(specializationType);
-
-        return doctor;
-    }
+    private SpecializationTypeResponse specializationType;
 }

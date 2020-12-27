@@ -1,10 +1,7 @@
 package com.mkotynski.mmf.service;
 
 
-import com.mkotynski.mmf.dto.SpecializationTypeRequest;
-import com.mkotynski.mmf.dto.SpecializationTypeResponse;
-import com.mkotynski.mmf.dto.VisitTypeRequest;
-import com.mkotynski.mmf.dto.VisitTypeResponse;
+import com.mkotynski.mmf.dto.*;
 import com.mkotynski.mmf.entity.SpecializationType;
 import com.mkotynski.mmf.entity.VisitType;
 import com.mkotynski.mmf.repository.SpecializationTypeRepository;
@@ -36,7 +33,11 @@ public class SpecializationTypeService {
         return Optional.ofNullable(specializationType.getResponseDto());
     }
 
-    public List<SpecializationTypeResponse> getAllVisitTypes() {
+    public Optional<SpecializationTypeResponse> getSpecializationType(Integer id) {
+        return Optional.ofNullable(specializationTypeRepository.findById(id).orElse(null).getResponseDto());
+    }
+
+    public List<SpecializationTypeResponse> getAllSpecializationType() {
         return specializationTypeRepository.findAll()
                 .stream()
                 .map(SpecializationType::getResponseDto)

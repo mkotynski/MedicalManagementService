@@ -6,7 +6,6 @@ import com.mkotynski.mmf.dto.DoctorResponse;
 import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.repository.DoctorRepository;
 import com.mkotynski.mmf.service.DoctorService;
-import com.mkotynski.mmf.service.PatientService;
 import com.mkotynski.mmf.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -27,7 +28,7 @@ public class DoctorController {
     private final DoctorService doctorService;
     private final DoctorRepository doctorRepository;
 
-    @Value("${pl.mkotynski.wms.app-name}")
+    @Value("${pl.mkotynski.mfms.app-name}")
     private String applicationName;
     private static final String ENTITY_NAME = "doctor";
 
@@ -36,6 +37,13 @@ public class DoctorController {
         log.debug("REST request to read all doctor");
 
         return doctorService.getAllDoctors();
+    }
+
+    @GetMapping("/doctor/{id}")
+    public ResponseEntity<Optional<DoctorResponse>> getDoctor(@PathVariable Integer id) {
+        log.debug("REST request to read doctor");
+
+        return ResponseEntity.ok().body(doctorService.getDoctor(id));
     }
 
     @PostMapping("/doctor")

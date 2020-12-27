@@ -1,11 +1,7 @@
 package com.mkotynski.mmf.controller;
 
 
-import com.mkotynski.mmf.dto.PatientRequest;
-import com.mkotynski.mmf.dto.PatientResponse;
-import com.mkotynski.mmf.dto.VisitTypeRequest;
-import com.mkotynski.mmf.dto.VisitTypeResponse;
-import com.mkotynski.mmf.entity.Patient;
+import com.mkotynski.mmf.dto.*;
 import com.mkotynski.mmf.entity.VisitType;
 import com.mkotynski.mmf.repository.VisitTypeRepository;
 import com.mkotynski.mmf.service.VisitTypeService;
@@ -19,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -29,13 +26,20 @@ public class VisitTypeController {
     private final VisitTypeRepository visitTypeRepository;
     private final VisitTypeService visitTypeService;
 
-    @Value("${pl.mkotynski.wms.app-name}")
+    @Value("${pl.mkotynski.mfms.app-name}")
     private String applicationName;
     private static final String ENTITY_NAME = "visit-type";
 
     @GetMapping("/visit-type")
     public List<VisitTypeResponse> getAllVisitTypes() {
         return visitTypeService.getAllVisitTypes();
+    }
+
+    @GetMapping("/visit-type/{id}")
+    public ResponseEntity<Optional<VisitTypeResponse>> getVisitType(@PathVariable Integer id) {
+        log.debug("REST request to read specialization-type");
+
+        return ResponseEntity.ok().body(visitTypeService.getVisitType(id));
     }
 
     @PostMapping("/visit-type")

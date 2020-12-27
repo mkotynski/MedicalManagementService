@@ -1,9 +1,6 @@
 package com.mkotynski.mmf.dto;
 
-import com.mkotynski.mmf.entity.Doctor;
-import com.mkotynski.mmf.entity.Patient;
-import com.mkotynski.mmf.entity.SpecializationType;
-import com.mkotynski.mmf.entity.VisitType;
+import com.mkotynski.mmf.enums.VisitStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +18,11 @@ public class MedicalVisitResponse {
     private Integer id;
     private String name;
     private Date date;
+    private Date endDate;
+    private Boolean done;
     private Time time;
     private VisitTypeResponse visitType;
+    private VisitStatus visitStatus;
     private String description;
     private DoctorResponse doctor;
     private PatientResponse patient;

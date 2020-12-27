@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -29,13 +30,20 @@ public class SpecializationTypeController {
     private final SpecializationTypeRepository specializationTypeRepository;
     private final SpecializationTypeService specializationTypeService;
 
-    @Value("${pl.mkotynski.wms.app-name}")
+    @Value("${pl.mkotynski.mfms.app-name}")
     private String applicationName;
     private static final String ENTITY_NAME = "specialization_type";
 
     @GetMapping("/specialization-type")
-    public List<SpecializationType> getAllSpecializationTypes() {
-        return specializationTypeRepository.findAll();
+    public List<SpecializationTypeResponse> getAllSpecializationTypes() {
+        return specializationTypeService.getAllSpecializationType();
+    }
+
+    @GetMapping("/specialization-type/{id}")
+    public ResponseEntity<Optional<SpecializationTypeResponse>> getSpecializationType(@PathVariable Integer id) {
+        log.debug("REST request to read specialization-type");
+
+        return ResponseEntity.ok().body(specializationTypeService.getSpecializationType(id));
     }
 
     @PostMapping("/specialization-type")

@@ -11,4 +11,8 @@ import java.util.List;
 public interface MedicalVisitRepository extends JpaRepository<MedicalVisit, Integer> {
 
     List<MedicalVisit> findAllByPatient_Id(Integer id);
+
+    MedicalVisit findByIdAndDoctor_SubjectOrPatient_Subject(Integer id, String doctorSubject, String patientSubject);
+
+    List<MedicalVisit> findAllByDoctor_SubjectOrPatient_Subject(String patientSubject, String doctorSubject);
 }

@@ -24,8 +24,18 @@ public class AvailableDate {
     @Column(name = "date")
     private Date date;
 
+    //in minutes
+    @Column(name = "duration")
+    private Integer duration;
+
+    @Column(name = "end_date")
+    private Date endDate;
+
     @Column(name = "repeatable")
-    private Integer repeatable;
+    private Boolean repeatable;
+
+    @Column(name = "reserved")
+    private Boolean reserved;
 
     @Column(name = "repeatable_period")
     private RepeatablePeriod repeatablePeriod;
@@ -37,7 +47,11 @@ public class AvailableDate {
         return AvailableDateResponse.builder()
                 .id(this.id)
                 .date(this.date)
+                .endDate(this.endDate)
+                .duration(this.duration)
                 .repeatable(this.repeatable)
+                .repeatablePeriod(this.repeatablePeriod)
+                .reserved(this.reserved)
                 .doctor(this.doctor.getResponseDto())
                 .build();
     }

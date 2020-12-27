@@ -32,6 +32,9 @@ public class Doctor {
     @ManyToOne
     private SpecializationType specializationType;
 
+    @Column(name = "subject")
+    private String subject;
+
     public DoctorResponse getResponseDto(){
         return DoctorResponse.builder()
                 .id(this.id)

@@ -1,13 +1,9 @@
 package com.mkotynski.mmf.controller;
 
 
-import com.mkotynski.mmf.dto.DoctorRequest;
-import com.mkotynski.mmf.dto.DoctorResponse;
 import com.mkotynski.mmf.dto.PatientRequest;
 import com.mkotynski.mmf.dto.PatientResponse;
-import com.mkotynski.mmf.entity.Doctor;
 import com.mkotynski.mmf.entity.Patient;
-import com.mkotynski.mmf.repository.DoctorRepository;
 import com.mkotynski.mmf.repository.PatientRepository;
 import com.mkotynski.mmf.service.PatientService;
 import com.mkotynski.mmf.utils.HeaderUtil;
@@ -20,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -31,7 +28,7 @@ public class PatientController {
     private final PatientService patientService;
     private final PatientRepository patientRepository;
 
-    @Value("${pl.mkotynski.wms.app-name}")
+    @Value("${pl.mkotynski.mfms.app-name}")
     private String applicationName;
     private static final String ENTITY_NAME = "patient";
 
@@ -40,6 +37,13 @@ public class PatientController {
         log.debug("REST request to read all patient");
 
         return patientService.getAllPatients();
+    }
+
+    @GetMapping("/patient/{id}")
+    public ResponseEntity<Optional<PatientResponse>> getPatient(@PathVariable Integer id) {
+        log.debug("REST request to read doctor");
+
+        return ResponseEntity.ok().body(patientService.getPatient(id));
     }
 
     @PostMapping("/patient")

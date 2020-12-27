@@ -29,6 +29,12 @@ public class MedicalVisit {
     @Column(name = "date")
     private Date date;
 
+    @Column(name = "endDate")
+    private Date endDate;
+
+    @Column(name = "done")
+    private Boolean done;
+
     @Column(name = "time")
     private Time time;
 
@@ -53,8 +59,11 @@ public class MedicalVisit {
                 .id(this.id)
                 .name(this.name)
                 .date(this.date)
+                .endDate(this.endDate)
                 .time(this.time)
+                .done(this.done)
                 .visitType(this.visitType.getResponseDto())
+                .visitStatus(this.visitStatus)
                 .description(this.description)
                 .doctor(this.doctor.getResponseDto())
                 .patient(this.patient.getResponseDto())
