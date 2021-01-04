@@ -56,7 +56,8 @@ public class MedicalVisitService {
     }
 
     public Optional<MedicalVisitResponse> getMedicalVisit(Integer id, String subject) {
-        return Optional.ofNullable(medicalVisitRepository.findByIdAndDoctor_SubjectOrPatient_Subject(id, subject, subject).getResponseDto());
+        System.out.println(medicalVisitRepository.findDistinctByIdAndDoctor_SubjectOrPatient_Subject(id, subject, subject).getResponseDto());
+        return Optional.ofNullable(medicalVisitRepository.findDistinctByIdAndDoctor_SubjectOrPatient_Subject(id, subject, subject).getResponseDto());
     }
 
     public List<MedicalVisitResponse> getAllMedicalVisit() {
@@ -85,11 +86,11 @@ public class MedicalVisitService {
         def.setDate(medicalVisitRequest.getDate());
         def.setEndDate(medicalVisitRequest.getEndDate());
         def.setDone(medicalVisitRequest.getDone());
-        def.setVisitType(visitTypeRepository.findById(medicalVisitRequest.getVisitType().getId()).get());
+        def.setVisitType(visitTypeRepository.findById(medicalVisitRequest.getVisitType().getId()).orElse(null));
         def.setDescription(medicalVisitRequest.getDescription());
         def.setVisitStatus(medicalVisitRequest.getVisitStatus());
-        def.setDoctor(doctorRepository.findById(medicalVisitRequest.getDoctor().getId()).get());
-        def.setPatient(patientRepository.findById(medicalVisitRequest.getPatient().getId()).get());
+        def.setDoctor(doctorRepository.findById(medicalVisitRequest.getDoctor().getId()).orElse(null));
+        def.setPatient(patientRepository.findById(medicalVisitRequest.getPatient().getId()).orElse(null));
 
         return medicalVisitRepository.save(def);
     }

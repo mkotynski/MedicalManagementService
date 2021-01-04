@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.print.Doc;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,4 +52,8 @@ public class DoctorService {
         return doctorRepository.save(def);
     }
 
+    public Optional<DoctorResponse> getDoctorBySubject(String subjectFromRequest) {
+        return Optional.ofNullable(doctorRepository.findBySubject(subjectFromRequest).getResponseDto());
+
+    }
 }

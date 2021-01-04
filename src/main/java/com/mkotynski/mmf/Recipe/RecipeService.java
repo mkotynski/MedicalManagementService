@@ -83,4 +83,10 @@ public class RecipeService {
         return recipeRepository.save(def);
     }
 
+    public List<RecipeResponse> getReferencesOfSubject(String subjectFromRequest) {
+        return recipeRepository.findAllByMedicalVisit_Patient_Subject(subjectFromRequest)
+                .stream()
+                .map(Recipe::getResponseDto)
+                .collect(Collectors.toList());
+    }
 }

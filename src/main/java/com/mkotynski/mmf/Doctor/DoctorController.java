@@ -3,13 +3,16 @@ package com.mkotynski.mmf.Doctor;
 
 import com.mkotynski.mmf.Doctor.Dto.DoctorRequest;
 import com.mkotynski.mmf.Doctor.Dto.DoctorResponse;
+import com.mkotynski.mmf.Patient.Dto.PatientResponse;
 import com.mkotynski.mmf.Utils.HeaderUtil;
+import com.mkotynski.mmf.Utils.SubjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -67,6 +70,13 @@ public class DoctorController {
         log.debug("REST request to delete doctor : {}", id);
         doctorRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+    }
+
+    @GetMapping("/doctor/logged")
+    public ResponseEntity<Optional<DoctorResponse>> getDoctorLogged(ServletRequest request) {
+        log.debug("REST request to read patient");
+
+        return ResponseEntity.ok().body(doctorService.getDoctorBySubject(SubjectUtil.getSubjectFromRequest(request)));
     }
 
 

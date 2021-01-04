@@ -1,5 +1,6 @@
 package com.mkotynski.mmf.Recipe;
 
+import com.mkotynski.mmf.Reference.Reference;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,5 +24,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
 
     @Query("select m from Recipe m where m not in :positions and m.medicalVisit.id = :medicalVisitId")
     List<Recipe> selectWhereNotExists(List<Recipe> positions, Integer medicalVisitId);
+
+
+    List<Recipe> findAllByMedicalVisit_Patient_Subject(String subject);
 
 }

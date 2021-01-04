@@ -29,7 +29,6 @@ import java.util.Optional;
 @Slf4j
 public class MedicalVisitController {
 
-
     private final MedicalVisitService medicalVisitService;
     private final MedicalVisitRepository medicalVisitRepository;
 

@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AvailableDateResponse {
+public class AvailableDateResponse{
     private Integer id;
     private Date date;
     private Date endDate;

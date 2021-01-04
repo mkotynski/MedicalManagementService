@@ -48,4 +48,8 @@ public class PatientService {
     }
 
 
+    public Optional<PatientResponse> getPatientBySubject(String subjectFromRequest) {
+
+        return Optional.ofNullable(patientRepository.findBySubject(subjectFromRequest).getResponseDto());
+    }
 }

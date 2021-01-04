@@ -3,14 +3,16 @@ package com.mkotynski.mmf.Recipe;
 
 import com.mkotynski.mmf.Recipe.Dto.RecipeRequest;
 import com.mkotynski.mmf.Recipe.Dto.RecipeResponse;
-import com.mkotynski.mmf.Reference.Dto.ReferenceResponse;
 import com.mkotynski.mmf.Utils.HeaderUtil;
+import com.mkotynski.mmf.Utils.SubjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -81,6 +83,13 @@ public class RecipeController {
         log.debug("REST request to read all references");
 
         return ResponseEntity.ok().body(recipeService.getRecipesByVisitId(id));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_patient')")
+    @GetMapping(resource + "/of-subject")
+    public ResponseEntity<List<RecipeResponse>> getReferencesOfSubject(ServletRequest request) {
+        log.debug("REST request to read medical-visit for doctor or patient subject");
+        return ResponseEntity.ok().body(recipeService.getReferencesOfSubject(SubjectUtil.getSubjectFromRequest(request)));
     }
 
 }
