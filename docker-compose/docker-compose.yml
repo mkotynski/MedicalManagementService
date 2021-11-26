@@ -1,0 +1,44 @@
+version: '3.7'
+
+volumes:
+  postgres_data:
+    driver: local
+
+services:
+  mfms-keycloak-postgres:
+    image: postgres:14.1
+    restart: on-failure
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  mfms-keycloak:
+    image: jboss/keycloak:15.0.2
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: mfms-keycloak-postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    depends_on:
+      - mfms-keycloak-postgres
+  mfms-postgres:
+    container_name: mfms-postgres
+    image: postgres:14.1
+    restart: on-failure
+    environment:
+      POSTGRES_USER: mfms-backend
+      POSTGRES_PASSWORD: mfms-backend
+      POSTGRES_DB: mfms-backend
+    ports:
+      - "5432:5432"
+    volumes:
+      - /postgres-eon:/data/postgres
