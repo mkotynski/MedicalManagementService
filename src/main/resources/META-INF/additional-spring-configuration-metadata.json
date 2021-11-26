@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "pl.mkotynski.mfms.app-name",
-      "type": "java.lang.String",
-      "description": "Description for pl.mkotynski.mfms.app-name."
-    }
-  ] }
