@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/mmf-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=8085 -jar target/mmf-0.0.1-SNAPSHOT.jar
